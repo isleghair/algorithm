@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function debounce (fn, wait) {
+            console.log("进入防抖函数");
+            let timer = null
+            return function (...args) {
+                if (timer !== null) {
+                    clearTimeout(timer)
+                }
+                timer = setTimeout(() => {
+                    fn(args)
+                    timer = null
+                }, wait);
+                console.log(timer);
+            }
+        }
+
+        function handleClick () {
+            console.log("点击了按钮");
+            debounce(() => console.log("click fast!"), 100)
+            a()
+        }
+
+        function a () { console.log("???"); }
+    </script>
+    <button onclick="handleClick()">点我</button>
+</body>
+
+</html>
