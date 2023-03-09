@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <input id="input1">
+
+    <script>
+        // function debounce (fn, delay = 500) {
+        //     // timer 是在闭包中的
+        //     let timer = null;
+
+        //     return function (...args) {
+        //         let that = this;
+        //         if (timer) {
+        //             clearTimeout(timer)
+        //         }
+        //         timer = setTimeout(() => {
+        //             fn.apply(that, args)
+        //             timer = null
+        //         }, delay)
+        //     }
+        // }
+
+        // 创建一个 debounce 函数
+        function debounce (func, wait) {
+            let timeout;
+
+            // 返回一个函数，该函数将成为实际的事件处理函数
+            return function executedFunction (value) {
+                // 如果之前已经设置了一个定时器，就清除它
+                if (timeout) {
+                    clearTimeout(timeout);
+                }
+
+                // 在一段时间后调用传入的函数
+                timeout = setTimeout(() => {
+                    func(value);
+                }, wait);
+            };
+        }
+
+        // 定义一个输入函数，例如搜索函数
+        function search (value) {
+            // 在这里执行实际的搜索操作，例如发送网络请求等
+            console.log(`搜索 ${value}`);
+        }
+
+        // 获取输入框元素
+        const input = document.getElementById("input1");
+
+        // 将输入函数传入 debounce 函数中，获取防抖后的函数
+        const debounceSearch = debounce(search, 500);
+
+        // 监听输入框的输入事件，并调用防抖后的函数
+        input.addEventListener("input", function (event) {
+            debounceSearch(event.target.value);
+        });
+
+        // test debounce 返回一个函数
+        // input1 = document.getElementById('input1')
+        // input1.addEventListener('keyup', debounce(function () {
+        //     console.log(input1.value)
+        // }, 600))
+
+        // input1.addEventListener('input', debounce(a("yuu"), 600))
+
+        // function a (name) {
+        //     console.log(name + "触发了防抖");
+        // }
+    </script>
+
+</body>
+
+</html>

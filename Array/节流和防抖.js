@@ -48,3 +48,48 @@ function useDebounce (fn, delay) {
     }
 }
 
+function debounce (fn, delay) {
+    let timer = null;
+    return function (...args) {
+        if (timer) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(() => {
+            fn.apply(this, args)
+        }, delay);
+    }
+}
+
+function debounce (fn, delay) {
+    const refTimer = useRef({})
+    return function (...args) {
+        if (refTimer.current) {
+            clearTimeout(refTimer.current)
+        }
+        refTimer.current = setTimeout(() => {
+            fn.apply(this, args)
+        }, delay);
+    }
+}
+
+function debounce (fn, dealy) {
+    let timer = null;
+    return function (...args) {
+        if (timer) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(() => {
+            fn.apply(this, args)
+        }, dealy)
+    }
+}
+
+function fn (...args) {
+    console.log(this, args);
+}
+let obj = {
+    myname: "张三"
+}
+
+fn.apply(obj, [1, 2]); // this会变成传入的obj，传入的参数必须是一个数组；
+// fn(1, 2) // this指向window
