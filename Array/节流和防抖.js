@@ -93,3 +93,15 @@ let obj = {
 
 fn.apply(obj, [1, 2]); // this会变成传入的obj，传入的参数必须是一个数组；
 // fn(1, 2) // this指向window
+
+function debounce (fn, delay) {
+    let timer = null;
+    return function (...args) {
+        if (timer) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(() => {
+            fn.apply(this, args)
+        }, delay)
+    }
+}
