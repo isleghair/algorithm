@@ -1,95 +1,102 @@
+// 定义有向图数据结构
+class Graph {
+    constructor() {
+        this.vertices = [];
+        this.edges = {};
+    }
+
+    addVertex (v) {
+        this.vertices.push(v);
+        this.edges[v] = [];
+    }
+
+    addEdge (v, w) {
+        this.edges[v].push(w);
+    }
+}
+
+// 定义节点数据结构
 class Node {
-    constructor(id, resource, priority) {
-        this.id = id; // 节点ID
-        this.resource = resource; // 节点所需的资源
-        this.priority = priority; // 节点的优先级
-        this.nextNodes = []; // 后继节点
+    constructor(name, time, priority, resource) {
+        this.name = name; // 节点名称
+        this.time = time; // 完成任务所需时间
+        this.priority = priority; // 优先级
+        this.resource = resource; // 资源
+        this.start = 0; // 开始时间
+        this.end = 0; // 结束时间
         this.inDegree = 0; // 入度
     }
 }
 
-class Graph {
-    constructor() {
-        this.nodes = new Map(); // 存储所有节点
-    }
+// 计算所有任务的开始结束时间
+function calcStartTimeAndEndTime (graph) {
+    const queue = []; // 存储入度为 0 的节点
+    const nodes = {}; // 存储每个节点的属性信息
 
-    addNode (id, resource, priority) {
-        if (!this.nodes.has(id)) {
-            this.nodes.set(id, new Node(id, resource, priority)); // 添加节点
+    // 初始化节点信息，统计每个节点的入度
+    for (let v of graph.vertices) {
+        nodes[v] = new Node(v, v.time, v.priority, v.resource);
+        for (let w of graph.edges[v]) {
+            nodes[w].inDegree++;
         }
     }
 
-    addEdge (fromId, toId) {
-        const fromNode = this.nodes.get(fromId);
-        const toNode = this.nodes.get(toId);
-
-        if (fromNode && toNode) {
-            fromNode.nextNodes.push(toNode); // 添加有向边
-            toNode.inDegree++; // 更新入度
+    // 将入度为 0 的节点加入队列
+    for (let v of graph.vertices) {
+        if (nodes[v].inDegree === 0) {
+            queue.push(v);
         }
     }
 
-    topologicalSort () {
-        const queue = [];
+    while (queue.length > 0) {
+        const v = queue.shift();
 
-        for (const node of this.nodes.values()) {
-            if (node.inDegree === 0) {
-                queue.push(node); // 将所有入度为0的节点加入队列
+        // 计算该节点的开始时间
+        let maxStartTime = 0;
+        for (let w of graph.edges[v]) {
+            if (nodes[w].end > maxStartTime) {
+                maxStartTime = nodes[w].end;
             }
         }
+        const idleTime = getIdleTime(maxStartTime, nodes[v].resource);
+        nodes[v].start = Math.max(maxStartTime, idleTime);
 
-        while (queue.length > 0) {
-            const node = queue.shift();
+        // 计算该节点的结束时间
+        nodes[v].end = nodes[v].start + nodes[v].time;
 
-            // 检查是否与已有任务产生冲突，如果有冲突则比较优先级
-            let conflict = false;
-            for (const nextNode of node.nextNodes) {
-                if (nextNode.resource === node.resource && nextNode.priority > node.priority) {
-                    conflict = true;
-                    break;
-                }
+        // 更新与该节点相邻的节点的入度
+        for (let w of graph.edges[v]) {
+            nodes[w].inDegree--;
+            if (nodes[w].inDegree === 0) {
+                queue.push(w);
             }
-
-            if (!conflict) {
-                // 执行任务
-                console.log(`执行任务 ${node.id}`);
-
-                // 更新后继节点的入度
-                for (const nextNode of node.nextNodes) {
-                    nextNode.inDegree--;
-                    if (nextNode.inDegree === 0) {
-                        queue.push(nextNode); // 如果入度为0，则加入队列
-                    }
-                }
-
-                // 从图中删除该节点
-                this.nodes.delete(node.id);
-            } else {
-                // 将节点重新加入队列
-                queue.push(node);
-            }
-        }
-
-        // 检查是否存在环路
-        if (this.nodes.size > 0) {
-            console.log('该图存在环路');
         }
     }
+
+    return nodes;
 }
 
-// 使用示例
-const graph = new Graph();
+// 获取资源的最快空闲时间
+function getIdleTime (maxStartTime, resource) {
+    // 假设资源的最快空闲时间为 maxStartTime + 1
+    let idleTime = maxStartTime + 1;
+    return idleTime;
+}
 
-graph.addNode(1, 'resource1', 1);
-graph.addNode(2, 'resource2', 2);
-graph.addNode(3, 'resource3', 3);
-graph.addNode(4, 'resource2', 4);
-graph.addNode(5, 'resource1', 5);
+// 测试
+const g = new Graph();
+g.addVertex({ name: 'a', time: 3, priority: 3, resource: 1 });
+g.addVertex({ name: 'b', time: 2, priority: 2, resource: 2 });
+g.addVertex({ name: 'c', time: 1, priority: 2, resource: 1 });
+g.addVertex({ name: 'd', time: 4, priority: 1, resource: 3 });
 
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(3, 4);
-graph.addEdge(4, 5);
+g.addEdge('a', 'b');
+g.addEdge('a', 'c');
+g.addEdge('b', 'd');
+g.addEdge('c', 'd');
 
-graph.topologicalSort();
+const nodes = calcStartTimeAndEndTime(g);
+
+for (let v of g.vertices) {
+    console.log(`${v}: start=${nodes[v].start}, end=${nodes[v].end}`);
+}
