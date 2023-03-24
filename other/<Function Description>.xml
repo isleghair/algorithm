@@ -1,0 +1,32 @@
+<Function Description>
+    <!-- 主要功能 -->
+    <Main Function></Main Function>
+    <!-- 模型概述 -->
+    <Model Overview></Model Overview>
+    <!-- 使用方法 -->
+    <Usage Method></Usage Method>
+    <!-- 验证情况 -->
+    <Validation Status></Validation Status>
+</Function Description>
+
+<identification>
+  <!--顺序号-->
+  <sequence_number>根据分类采用四级编码</sequence_number>
+  <!--模型名称-->
+  <model_name>XX电磁散射特性计算软件</model_name>
+  <!--模型分类-->
+  <model_classification>
+    <!--三种分类-->
+<objenv>目标/环境</objenv>
+<physic>光学/电磁/声学/物理/运动</target>
+<domain>控制/感知/决策/保障/资源管理/信息通信网络</domain>
+  </model_classification>
+  <!--MB名称-->
+  <MB_name>xx</MB_name>
+  <!--Ｊ种-->
+  <J_type></J_type>
+  <!--Ｍ级-->
+  <M_level></M_level>
+  <!--专业分类-->
+  <professional_classification>训练/通信/通信/气象/测绘</professional_classification>
+</identification>

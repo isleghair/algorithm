@@ -14,6 +14,19 @@ function throttled2 (fn, delay = 500) {
     }
 }
 
+
+function throttled (fn, delay) {
+    let timer = null;
+    return function (...args) {
+        if (!timer) {
+            timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = null;
+            }, delay)
+        }
+    }
+}
+
 /**
  * 防抖 如果被打断执行，则重新开始计时 --经典版
  */
@@ -26,7 +39,6 @@ function debounce (fn, delay) {
         }
         timer = setTimeout(() => {
             fn.apply(this, args)
-            timer = null;
         }, delay);
     }
 }
@@ -100,6 +112,17 @@ function debounce (fn, delay) {
         if (timer) {
             clearTimeout(timer)
         }
+        timer = setTimeout(() => {
+            fn.apply(this, args)
+        }, delay)
+    }
+}
+
+function debounce (fn, delay) {
+    let timer = null;
+    return function (...args) {
+        if (timer)
+            clearTimeout(timer)
         timer = setTimeout(() => {
             fn.apply(this, args)
         }, delay)
