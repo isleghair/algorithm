@@ -1,6 +1,7 @@
 /**
  * @param {number[]} prices
  * @return {number}
+ * 记录到目前价格为止的最低价格，然后判断
  */
 var maxProfit = function (prices) {
     let low = prices[0];
@@ -11,3 +12,18 @@ var maxProfit = function (prices) {
     }
     return profit;
 };
+
+/**
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function (prices) {
+    let minPrice = Number.MAX_VALUE;
+    let profit = Number.MIN_VALUE;
+    for (const price of prices) {
+        profit = Math.max(price - minPrice, profit);
+        minPrice = Math.min(price, minPrice)
+    }
+    return profit;
+};
+
